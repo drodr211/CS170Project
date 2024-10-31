@@ -1,5 +1,9 @@
 from copy import deepcopy
 import sys
+import math
+
+goal_state = [[1,2,3],[4,5,6],[7,8,0]]
+goalCoords = [(0,0), (0,1), (0,2), (1,0), (1,1), (1,2), (2,0), (2,1)]
 
 class Node:
     def __init__(self, state, gn, hn=None):
@@ -23,6 +27,8 @@ def findZero(state):
 
     return [i, j]
 
+def distance(c1, c2):
+    return math.sqrt(((c1[0] - c2[0]) ** 2) + ((c1[1] - c2[1]) ** 2))
 
 def moveUp(currState):
     zeroPos = findZero(currState)
@@ -64,7 +70,6 @@ def moveLeft(currState):
     return newState
 
 def moveRight(currState):
-
     zeroPos = findZero(currState)
     i = zeroPos[0]
     j = zeroPos[1]
@@ -78,27 +83,35 @@ def moveRight(currState):
     return newState
 
 def astar_mispTile(state):
-
-
-
-
-    return None
+    hn = 0
+    for r in range(0, 3) :
+        for c in range(0, 3):
+            if state[r][c] == 0:
+                continue
+            elif state[r][c] != goal_state[r][c]: 
+                hn += 1
+    return hn
 
 def astar_eucDist(state):
+    hn = 0
 
+    for r in range(0, 3):
+        for c in range(0, 3):
+            if state[r][c] == goal_state[r][c] or state[r][c] == 0:
+                continue
+            
+            else: 
+                dist = distance(goalCoords[state[r][c] - 1], [r,c])
+                print(dist)
+                hn += dist
 
-
-
-    
-    return None
-
+    return hn
 
 def calcHn(state, algoChoice):
     if algoChoice == 1: return 0
     if algoChoice == 2: return astar_mispTile(state)
     if algoChoice == 3: return astar_eucDist(state)
     return None
-
 
 def expandNode(node, currGn, algoChoice):
     print("Expanding State: \n")
