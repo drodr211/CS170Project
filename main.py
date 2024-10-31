@@ -1,50 +1,4 @@
-class Node:
-    def __init__(self, state, gn):
-        self.state = state
-        self.gn = gn
-        self.hn = None
-
-def moveUp(node):
-    state = None
-    return state
-
-def moveDown(node):
-    state = None
-    return state
-
-def moveLeft(node):
-    state = None
-    return state
-
-def moveRight(node):
-    state = None
-    return state
-
-
-def expandNode(startNode, currGn):
-    print("Expanding State: \n")
-    print(*startNode.state[0])
-    print(*startNode.state[1])
-    print(*startNode.state[2])
-
-    return None #return list of children nodes
-
-
-def search(startNode, algoChoice):
-    frontier = expandNode(startNode, 0) #intialize frontier list
-
-    while True:
-        # if frontier empty 
-        #       return failure
-        # choose next best node to expand, but 
-        # first check if it is a goal state
-            # if goal state, return solution or final whatever
-        # add node to the explored list or hashmap or something
-        # expand the node, add nodes to frontier if not yet explored before
-        return None
-
-
-
+from helper import *
 
 ##############  PROGRAM STARTS HERE  ################
 
@@ -79,16 +33,11 @@ algoChoice = int(input("\nEnter your choice of algorithm: \n1. Uniform Cost Sear
 
 match algoChoice:
     case 1: 
-        print("\nUsing Uniform Cost Search")
+        print("\nUsing Uniform Cost Search") # 1) Uniform Cost Search1 ( g(n) + 0)
     case 2: 
-        print("\nUsing A* with misplaced tile search")
+        print("\nUsing A* with misplaced tile search") # 2) A* with the Misplaced Tile heuristic ( g(n) + h(n) (misplaced tiles))
     case 3: 
-        print("\nUsing A* with euclidean distance search")
+        print("\nUsing A* with euclidean distance search") # 3) A* with the Euclidean Distance heuristic( g(n) + h(n) (euclidean sum) )
     case _: exit(1)
     
 search(startNode, algoChoice)
-
-
-# 1) Uniform Cost Search1 ( g(n) + 0)
-# 2) A* with the Misplaced Tile heuristic ( g(n) + h(n) (misplaced tiles))
-# 3) A* with the Euclidean Distance heuristic( g(n) + h(n) (euclidean sum) )
