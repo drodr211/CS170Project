@@ -1,9 +1,11 @@
 from copy import deepcopy
+import sys
+
 class Node:
-    def __init__(self, state, gn):
+    def __init__(self, state, gn, hn=None):
         self.state = state
         self.gn = gn
-        self.hn = None
+        self.hn = hn
 
 def findZero(state):
     done = False
@@ -75,21 +77,47 @@ def moveRight(currState):
 
     return newState
 
+def astar_mispTile(state):
 
-def expandNode(node, currGn):
+
+
+
+    return None
+
+def astar_eucDist(state):
+
+
+
+
+    
+    return None
+
+
+def calcHn(state, algoChoice):
+    if algoChoice == 1: return 0
+    if algoChoice == 2: return astar_mispTile(state)
+    if algoChoice == 3: return astar_eucDist(state)
+    return None
+
+
+def expandNode(node, currGn, algoChoice):
     print("Expanding State: \n")
     print(*node.state[0])
     print(*node.state[1])
     print(*node.state[2])
 
     if 0 not in node.state[0]:
-        nodeUp = Node(moveUp(node.state), currGn+1)
+        stateUp = moveUp(node.state)
+        nodeUp = Node(stateUp, currGn+1, calcHn(stateUp, algoChoice))
     if 0 not in node.state[2]:
-        nodeDown = Node(moveDown(node.state), currGn+1)
+        stateDown = moveDown(node.state)
+        nodeDown = Node(stateDown, currGn+1, calcHn(stateDown, algoChoice))
 
-    nodeLeft = Node(moveLeft(node.state), currGn+1)
+    
 
-    nodeRight = Node(moveRight(node.state), currGn+1)
+    #nodeLeft = Node(moveLeft(node.state), currGn+1)
+
+    #nodeRight = Node(moveRight(node.state), currGn+1)
     
     
 
@@ -99,11 +127,12 @@ def expandNode(node, currGn):
 
 
 def search(startNode, algoChoice):
-    frontier = expandNode(startNode, 0) #intialize frontier list
+    frontier = expandNode(startNode, 0, algoChoice) #intialize frontier list
 
     while True:
-        # if frontier empty 
-        #       return failure
+        if not frontier:
+                print("No solution found.")
+                sys.exit()
         # choose next best node to expand, but 
         # first check if it is a goal state
             # if goal state, return solution or final whatever
