@@ -1,31 +1,99 @@
+from copy import deepcopy
 class Node:
     def __init__(self, state, gn):
         self.state = state
         self.gn = gn
         self.hn = None
 
-def moveUp(node):
-    state = None
-    return state
+def findZero(state):
+    done = False
+    i = 0
+    j = 0
+    for row in state:
+        j = 0
+        for item in row:
+            if item == 0:
+                done = True
+                break
+            j = j + 1
+        if done: break
+        i = i + 1
 
-def moveDown(node):
-    state = None
-    return state
-
-def moveLeft(node):
-    state = None
-    return state
-
-def moveRight(node):
-    state = None
-    return state
+    return [i, j]
 
 
-def expandNode(startNode, currGn):
+def moveUp(currState):
+    zeroPos = findZero(currState)
+    i = zeroPos[0]
+    j = zeroPos[1]
+
+    newState = deepcopy(currState)
+
+    oldNum = newState[i-1][j]
+    newState[i - 1][j] = 0
+    newState[i][j] = oldNum
+
+    return newState
+
+def moveDown(currState):
+    zeroPos = findZero(currState)
+    i = zeroPos[0]
+    j = zeroPos[1]
+
+    newState = deepcopy(currState)
+
+    oldNum = newState[i+1][j]
+    newState[i + 1][j] = 0
+    newState[i][j] = oldNum
+
+    return newState
+
+def moveLeft(currState):
+    zeroPos = findZero(currState)
+    i = zeroPos[0]
+    j = zeroPos[1]
+
+    newState = deepcopy(currState)
+
+    oldNum = newState[i][j-1]
+    newState[i][j-1] = 0
+    newState[i][j] = oldNum
+
+    return newState
+
+def moveRight(currState):
+
+    zeroPos = findZero(currState)
+    i = zeroPos[0]
+    j = zeroPos[1]
+
+    newState = deepcopy(currState)
+
+    oldNum = newState[i][j+1]
+    newState[i][j+1] = 0
+    newState[i][j] = oldNum
+
+    return newState
+
+
+def expandNode(node, currGn):
     print("Expanding State: \n")
-    print(*startNode.state[0])
-    print(*startNode.state[1])
-    print(*startNode.state[2])
+    print(*node.state[0])
+    print(*node.state[1])
+    print(*node.state[2])
+
+    if 0 not in node.state[0]:
+        nodeUp = Node(moveUp(node.state), currGn+1)
+    if 0 not in node.state[2]:
+        nodeDown = Node(moveDown(node.state), currGn+1)
+
+    nodeLeft = Node(moveLeft(node.state), currGn+1)
+
+    nodeRight = Node(moveRight(node.state), currGn+1)
+    
+    
+
+    
 
     return None #return list of children nodes
 
