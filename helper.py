@@ -10,6 +10,14 @@ class Node:
         self.state = state
         self.gn = gn
         self.hn = hn
+    def printNode(self):
+        print("Node State: ")
+        print(self.state[0])
+        print(self.state[1])
+        print(self.state[2])
+        print("G(n): " + str(self.gn))
+        print("H(n): " + str(self.hn))
+        print("\n")
 
 def findZero(state):
     done = False
@@ -94,17 +102,13 @@ def astar_mispTile(state):
 
 def astar_eucDist(state):
     hn = 0
-
     for r in range(0, 3):
         for c in range(0, 3):
             if state[r][c] == goal_state[r][c] or state[r][c] == 0:
                 continue
-            
             else: 
                 dist = distance(goalCoords[state[r][c] - 1], [r,c])
-                print(dist)
                 hn += dist
-
     return hn
 
 def calcHn(state, algoChoice):
@@ -115,32 +119,43 @@ def calcHn(state, algoChoice):
 
 def expandNode(node, currGn, algoChoice):
     print("Expanding State: \n")
-    print(*node.state[0])
-    print(*node.state[1])
-    print(*node.state[2])
+    node.printNode()
+
+    #stateUp = [[0,0,0],[0,0,0],[0,0,0]]
+    #stateDown = [[0,0,0],[0,0,0],[0,0,0]]
+    #stateLeft = [[0,0,0],[0,0,0],[0,0,0]]
+    #stateRight = [[0,0,0],[0,0,0],[0,0,0]]
+
+    children = []
 
     if 0 not in node.state[0]:
         stateUp = moveUp(node.state)
         nodeUp = Node(stateUp, currGn+1, calcHn(stateUp, algoChoice))
+        children.append(nodeUp)
+
     if 0 not in node.state[2]:
         stateDown = moveDown(node.state)
         nodeDown = Node(stateDown, currGn+1, calcHn(stateDown, algoChoice))
+        children.append(nodeDown)
 
-    
+    if node.state[0][0] != 0 and node.state[1][0] != 0 and node.state[2][0] != 0:
+        stateLeft = moveLeft(node.state)
+        nodeLeft = Node(stateLeft, currGn+1, calcHn(stateLeft, algoChoice))
+        children.append(nodeLeft)
 
-    #nodeLeft = Node(moveLeft(node.state), currGn+1)
+    if node.state[0][2] != 0 and node.state[1][2] != 0 and node.state[2][2] != 0:
+        stateRight = moveRight(node.state)
+        nodeRight = Node(stateRight, currGn+1, calcHn(stateRight, algoChoice))
+        children.append(nodeRight)
 
-    #nodeRight = Node(moveRight(node.state), currGn+1)
-    
-    
-
-    
-
-    return None #return list of children nodes
+    return deepcopy(children) #return list of children nodes
 
 
 def search(startNode, algoChoice):
     frontier = expandNode(startNode, 0, algoChoice) #intialize frontier list
+    print("##### FRONTIER #####")
+    for node in frontier:
+        node.printNode()
 
     while True:
         if not frontier:
