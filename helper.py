@@ -112,17 +112,18 @@ def calcHn(state, algoChoice):
     if algoChoice == 3: return astar_eucDist(state)
     return None
 
-def solFound(max_queue_size):
+def solFound(max_queue_size, gn):
     print("\n\nSolution found! ")
     print(f"    Max queue length: {max_queue_size}")
     print(f"    Nodes expanded:   {nodes_expanded}")
+    print(f"    Solution depth:   {gn}")
 
     print("\n\n             ####### Ending program #######")
     sys.exit()
 
 
 
-def expandNode(node, currGn, algoChoice):
+def expandNode(node, algoChoice):
     print("Expanding State......... \n")
     children = []
     global nodes_expanded 
@@ -130,19 +131,19 @@ def expandNode(node, currGn, algoChoice):
 
     if 0 not in node.state[0]:
         stateUp = moveUp(node.state)
-        nodeUp = Node(stateUp, currGn+1, calcHn(stateUp, algoChoice))
+        nodeUp = Node(stateUp, node.gn + 1, calcHn(stateUp, algoChoice))
         children.append(nodeUp)
     if 0 not in node.state[2]:
         stateDown = moveDown(node.state)
-        nodeDown = Node(stateDown, currGn+1, calcHn(stateDown, algoChoice))
+        nodeDown = Node(stateDown, node.gn + 1, calcHn(stateDown, algoChoice))
         children.append(nodeDown)
     if node.state[0][0] != 0 and node.state[1][0] != 0 and node.state[2][0] != 0:
         stateLeft = moveLeft(node.state)
-        nodeLeft = Node(stateLeft, currGn+1, calcHn(stateLeft, algoChoice))
+        nodeLeft = Node(stateLeft, node.gn + 1, calcHn(stateLeft, algoChoice))
         children.append(nodeLeft)
     if node.state[0][2] != 0 and node.state[1][2] != 0 and node.state[2][2] != 0:
         stateRight = moveRight(node.state)
-        nodeRight = Node(stateRight, currGn+1, calcHn(stateRight, algoChoice))
+        nodeRight = Node(stateRight, node.gn + 1, calcHn(stateRight, algoChoice))
         children.append(nodeRight)
         
     return deepcopy(children) #return list of children nodes
@@ -152,10 +153,10 @@ def search(startNode, algoChoice):
     max_queue_size = 0
 
     #check if initial state is solution
-    if startNode.state == goal_state: solFound(max_queue_size) 
+    if startNode.state == goal_state: solFound(max_queue_size, gn) 
 
     #intialize frontier list and max queue size
-    frontier = expandNode(startNode, gn, algoChoice) 
+    frontier = expandNode(startNode, algoChoice) 
     frontier = sorted(frontier, key=lambda x:(-(x.gn + x.hn), -x.hn))
     max_queue_size = len(frontier)
 
@@ -171,11 +172,11 @@ def search(startNode, algoChoice):
         print(top_node)
         
         # and check for goal state
-        if top_node.state == goal_state: solFound(max_queue_size)
+        if top_node.state == goal_state: solFound(max_queue_size, top_node.gn)
 
         #increment g counter, expand nodes, append to frontier, sort
         gn += 1
-        newNodes = expandNode(top_node, gn, algoChoice)
+        newNodes = expandNode(top_node, algoChoice)
         for node in newNodes:
             frontier.append(node)
         frontier = sorted(frontier, key=lambda x:(-(x.gn + x.hn), -x.hn))
