@@ -121,28 +121,20 @@ def expandNode(node, currGn, algoChoice):
     print("Expanding State: \n")
     node.printNode()
 
-    #stateUp = [[0,0,0],[0,0,0],[0,0,0]]
-    #stateDown = [[0,0,0],[0,0,0],[0,0,0]]
-    #stateLeft = [[0,0,0],[0,0,0],[0,0,0]]
-    #stateRight = [[0,0,0],[0,0,0],[0,0,0]]
-
     children = []
 
     if 0 not in node.state[0]:
         stateUp = moveUp(node.state)
         nodeUp = Node(stateUp, currGn+1, calcHn(stateUp, algoChoice))
         children.append(nodeUp)
-
     if 0 not in node.state[2]:
         stateDown = moveDown(node.state)
         nodeDown = Node(stateDown, currGn+1, calcHn(stateDown, algoChoice))
         children.append(nodeDown)
-
     if node.state[0][0] != 0 and node.state[1][0] != 0 and node.state[2][0] != 0:
         stateLeft = moveLeft(node.state)
         nodeLeft = Node(stateLeft, currGn+1, calcHn(stateLeft, algoChoice))
         children.append(nodeLeft)
-
     if node.state[0][2] != 0 and node.state[1][2] != 0 and node.state[2][2] != 0:
         stateRight = moveRight(node.state)
         nodeRight = Node(stateRight, currGn+1, calcHn(stateRight, algoChoice))
@@ -153,6 +145,9 @@ def expandNode(node, currGn, algoChoice):
 
 def search(startNode, algoChoice):
     frontier = expandNode(startNode, 0, algoChoice) #intialize frontier list
+    max_queue_size = len(frontier)
+    frontier = sorted(frontier, key=lambda x:(-(x.gn + x.hn), -x.hn))
+
     print("##### FRONTIER #####")
     for node in frontier:
         node.printNode()
@@ -161,6 +156,11 @@ def search(startNode, algoChoice):
         if not frontier:
                 print("No solution found.")
                 sys.exit()
+        top_node = frontier.pop()
+        if top_node.state == goal_state:
+            print("Solution found. \n\n Ending program . . . . .")
+            sys.exit()
+
         # choose next best node to expand, but 
         # first check if it is a goal state
             # if goal state, return solution or final whatever
