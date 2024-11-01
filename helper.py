@@ -135,8 +135,8 @@ def getHashKey(state):
 def solFound(max_queue_size, gn):
     """Helper function to display info when a solution is found"""
     print("\n\nSolution found! ")
-    print(f"    Max queue length: {max_queue_size}")
     print(f"    Nodes expanded:   {nodes_expanded}")
+    print(f"    Max queue length: {max_queue_size}")
     print(f"    Solution depth:   {gn}")
 
     return 1
