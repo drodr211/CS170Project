@@ -39,5 +39,9 @@ match algoChoice:
     case 3: 
         print("\nUsing A* with euclidean distance search") # 3) A* with the Euclidean Distance heuristic( g(n) + h(n) (euclidean sum) )
     case _: exit(1)
+
+trace = 1
+trace = int(input("\nTrace or no trace? (1 or 0): \n\n >>> "))
+print("\n")
     
-search(startNode, algoChoice)
+search(startNode, algoChoice, trace)
