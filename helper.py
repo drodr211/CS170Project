@@ -115,6 +115,8 @@ def calcHn(state, algoChoice):
 def solFound(max_queue_size):
     print("\n\nSolution found! ")
     print(f"    Max queue length: {max_queue_size}")
+    print(f"    Nodes expanded:   {nodes_expanded}")
+
     print("\n\n             ####### Ending program #######")
     sys.exit()
 
@@ -123,6 +125,8 @@ def solFound(max_queue_size):
 def expandNode(node, currGn, algoChoice):
     print("Expanding State......... \n")
     children = []
+    global nodes_expanded 
+    nodes_expanded += 1
 
     if 0 not in node.state[0]:
         stateUp = moveUp(node.state)
@@ -140,7 +144,7 @@ def expandNode(node, currGn, algoChoice):
         stateRight = moveRight(node.state)
         nodeRight = Node(stateRight, currGn+1, calcHn(stateRight, algoChoice))
         children.append(nodeRight)
-
+        
     return deepcopy(children) #return list of children nodes
 
 def search(startNode, algoChoice):
