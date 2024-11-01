@@ -5,6 +5,7 @@ import math
 goal_state = [[1,2,3],[4,5,6],[7,8,0]]
 goalCoords = [(0,0), (0,1), (0,2), (1,0), (1,1), (1,2), (2,0), (2,1)]
 nodes_expanded = 0
+explored = dict()
 
 class Node:
     def __init__(self, state, gn, hn=-1):
@@ -12,7 +13,7 @@ class Node:
         self.gn = gn
         self.hn = hn
     def __repr__(self):
-        return f"{self.state[0][0]} {self.state[0][1]} {self.state[0][2]}\n{self.state[1][0]} {self.state[1][1]} {self.state[1][2]}\n{self.state[2][0]} {self.state[2][1]} {self.state[2][2]}\nG(n): {str(self.gn)}\nH(n): {str(self.hn)}"
+        return f"  {self.state[0][0]} {self.state[0][1]} {self.state[0][2]}\n  {self.state[1][0]} {self.state[1][1]} {self.state[1][2]}\n  {self.state[2][0]} {self.state[2][1]} {self.state[2][2]}\n  G(n): {str(self.gn)}\n  H(n): {str(self.hn)}"
 
 def findZero(state):
     done = False
@@ -112,45 +113,61 @@ def calcHn(state, algoChoice):
     if algoChoice == 3: return astar_eucDist(state)
     return None
 
+def getHashKey(state):
+    st = ""
+    for row in state:
+        for column in row:
+            st += str(column)
+    return st
+
 def solFound(max_queue_size, gn):
     print("\n\nSolution found! ")
     print(f"    Max queue length: {max_queue_size}")
     print(f"    Nodes expanded:   {nodes_expanded}")
     print(f"    Solution depth:   {gn}")
 
-    print("\n\n             ####### Ending program #######")
+    print("\n\n             ####### Ending program #######\n\n")
     sys.exit()
 
 
 
 def expandNode(node, algoChoice):
-    print("Expanding State......... \n")
     children = []
     global nodes_expanded 
     nodes_expanded += 1
 
     if 0 not in node.state[0]:
         stateUp = moveUp(node.state)
-        nodeUp = Node(stateUp, node.gn + 1, calcHn(stateUp, algoChoice))
-        children.append(nodeUp)
+        if(getHashKey(stateUp) not in explored):
+            nodeUp = Node(stateUp, node.gn + 1, calcHn(stateUp, algoChoice))
+            explored[getHashKey(stateUp)] = True
+            children.append(nodeUp)
     if 0 not in node.state[2]:
         stateDown = moveDown(node.state)
-        nodeDown = Node(stateDown, node.gn + 1, calcHn(stateDown, algoChoice))
-        children.append(nodeDown)
+        if(getHashKey(stateDown) not in explored):
+            nodeDown = Node(stateDown, node.gn + 1, calcHn(stateDown, algoChoice))
+            explored[getHashKey(stateDown)] = True
+            children.append(nodeDown)
     if node.state[0][0] != 0 and node.state[1][0] != 0 and node.state[2][0] != 0:
         stateLeft = moveLeft(node.state)
-        nodeLeft = Node(stateLeft, node.gn + 1, calcHn(stateLeft, algoChoice))
-        children.append(nodeLeft)
+        if(getHashKey(stateLeft) not in explored):
+            nodeLeft = Node(stateLeft, node.gn + 1, calcHn(stateLeft, algoChoice))
+            explored[getHashKey(stateLeft)] = True
+            children.append(nodeLeft)
     if node.state[0][2] != 0 and node.state[1][2] != 0 and node.state[2][2] != 0:
         stateRight = moveRight(node.state)
-        nodeRight = Node(stateRight, node.gn + 1, calcHn(stateRight, algoChoice))
-        children.append(nodeRight)
+        if(getHashKey(stateRight) not in explored):
+            nodeRight = Node(stateRight, node.gn + 1, calcHn(stateRight, algoChoice))
+            explored[getHashKey(stateRight)] = True
+            children.append(nodeRight)
         
     return deepcopy(children) #return list of children nodes
 
-def search(startNode, algoChoice):
+def search(startNode, algoChoice, trace):
     gn = 0
     max_queue_size = 0
+
+    explored[getHashKey(startNode.state)] = True
 
     #check if initial state is solution
     if startNode.state == goal_state: solFound(max_queue_size, gn) 
@@ -168,20 +185,26 @@ def search(startNode, algoChoice):
         
         # pop next best node to expand, display it 
         top_node = frontier.pop()
-        print("The best state is: \n")
-        print(top_node)
+        if trace: 
+            print("The best state is: \n")
+            print(top_node)
         
         # and check for goal state
         if top_node.state == goal_state: solFound(max_queue_size, top_node.gn)
 
+
+        # add to explored map
+        key = getHashKey(top_node.state)
+        explored[key] = True
+
+
         #increment g counter, expand nodes, append to frontier, sort
         gn += 1
         newNodes = expandNode(top_node, algoChoice)
+        if trace: print("Expanding State......... \n")
         for node in newNodes:
             frontier.append(node)
         frontier = sorted(frontier, key=lambda x:(-(x.gn + x.hn), -x.hn))
         
         # update max queue size in case it changed
         max_queue_size = max(max_queue_size, len(frontier))
-
-
