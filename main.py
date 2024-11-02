@@ -14,7 +14,8 @@ match puzzleChoice:
         r3 = [7,5,8]
         print("\nUsing default puzzle: \n")
     case 2: #use user puzzle
-        r1 = list(map(int, input("\nEnter row 1: ").split()))
+        print("\nEnter numbers separated by a single space.")
+        r1 = list(map(int, input("Enter row 1: ").split()))
         r2 = list(map(int, input("Enter row 2: ").split()))
         r3 = list(map(int, input("Enter row 3: ").split()))
         print("\nUsing puzzle: \n")
